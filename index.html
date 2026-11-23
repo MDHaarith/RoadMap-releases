@@ -92,6 +92,58 @@
       .feature.flip .text { order: 0; }
       .grid { grid-template-columns: 1fr; }
     }
+
+    /* Hero route: a line draws across the hero and the orange dot travels along it, like the logo. */
+    .hero { position: relative; }
+    .hero .wrap { position: relative; z-index: 1; }
+    .route { position: absolute; left: 0; top: 0; width: 100%; height: 620px; pointer-events: none; }
+    .route path { fill: none; stroke: #b9d1f2; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 2.6s cubic-bezier(.6,.05,.3,1) .3s forwards; }
+    .route .dot { fill: var(--dot); offset-path: path("M1500 500 C 1320 540, 1080 450, 1060 340 S 1130 160, 1250 130"); offset-distance: 0%; opacity: 0; animation: travel 2.6s cubic-bezier(.6,.05,.3,1) .3s forwards; }
+    .route .ring { fill: none; stroke: var(--dot); stroke-width: 3; opacity: 0; transform-box: fill-box; transform-origin: center; animation: ring 2.2s ease-out 2.9s infinite; }
+    @keyframes ring { 0% { opacity: .6; transform: scale(1); } 100% { opacity: 0; transform: scale(2.6); } }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @keyframes travel { 0% { opacity: 1; } to { offset-distance: 100%; opacity: 1; } }
+
+    /* Headline words rise in one after another; the rest follows. */
+    .hero h1 .w { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .08em; margin-bottom: -.08em; }
+    .hero h1 .w > span { display: inline-block; transform: translateY(105%); animation: rise .9s cubic-bezier(.16,1,.3,1) forwards; animation-delay: calc(.08s * var(--i) + .1s); }
+    .hero .lede, .hero .ctas, .hero .note { opacity: 0; animation: fadeUp .8s cubic-bezier(.16,1,.3,1) forwards; }
+    .hero .lede { animation-delay: .55s; } .hero .ctas { animation-delay: .7s; } .hero .note { animation-delay: .8s; }
+    @keyframes rise { to { transform: none; } }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+
+    /* Screenshot starts tilted back and flattens as it scrolls into view. */
+    .hero .stage { perspective: 1400px; }
+    .hero .shot { opacity: 0; animation: fadeUp 1s cubic-bezier(.16,1,.3,1) .9s forwards; }
+    @supports (animation-timeline: view()) {
+      .hero .shot { animation: fadeUp 1s cubic-bezier(.16,1,.3,1) .9s forwards, flatten linear both; animation-timeline: auto, view(); animation-range: normal, entry 0% cover 45%; transform-origin: 50% 0; }
+      @keyframes flatten { from { transform: rotateX(18deg) scale(.94); } to { transform: none; } }
+    }
+
+    /* Primary buttons get a soft sheen. */
+    .btn-primary { position: relative; overflow: hidden; }
+    .btn-primary::after { content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 35%, #ffffff40 50%, transparent 65%); transform: translateX(-120%); animation: sheen 4.5s ease-in-out 2.5s infinite; }
+    @keyframes sheen { 0%, 70% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+
+    /* Scroll reveals. */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); transition-delay: var(--d, 0s); }
+    .reveal.in { opacity: 1; transform: none; }
+    .feature .shot { transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1), box-shadow .5s; }
+    .feature .shot:hover { transform: translateY(-4px); box-shadow: 0 1px 2px #14141e0f, 0 34px 70px #14141e24; }
+    .card { transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1), border-color .2s; transition-delay: var(--d, 0s); }
+    .grid .card:hover { border-color: var(--accent-line, #b9d1f2); transform: translateY(-2px); }
+
+    /* The visitor's OS card is marked. */
+    .dl .card.mine { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+    .dl .card .yours { display: none; font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+    .dl .card.mine .yours { display: block; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .route path { stroke-dashoffset: 0; } .route .dot { opacity: 1; offset-distance: 100%; }
+      .hero h1 .w > span { transform: none; }
+      .hero .lede, .hero .ctas, .hero .note, .hero .shot, .reveal { opacity: 1; transform: none; }
+    }
   </style>
 </head>
 <body>
@@ -109,15 +161,20 @@
 
   <main>
     <section class="hero">
+      <svg class="route" viewBox="0 0 1440 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <path pathLength="1" d="M1500 500 C 1320 540, 1080 450, 1060 340 S 1130 160, 1250 130"/>
+        <circle class="ring" cx="1250" cy="130" r="11"/>
+        <circle class="dot" r="11"/>
+      </svg>
       <div class="wrap">
-        <h1>Learn anything by building it.</h1>
+        <h1 id="headline">Learn anything by building it.</h1>
         <p class="lede">Tell Roadmap what you want to learn. It checks what you already know, then builds a step-by-step course around a real project, with lessons, practice and a tutor that knows where you are.</p>
         <div class="ctas">
-          <a class="btn btn-primary" href="#download">Download for free</a>
+          <a class="btn btn-primary" id="dl-main" href="#download">Download for free</a>
           <a class="btn btn-ghost" href="#features">See what it does</a>
         </div>
-        <p class="note">Free. Runs on your own ChatGPT account or API key. Windows and Linux.</p>
-        <img class="shot" src="img/03-course-overview.webp" alt="A Roadmap course: stages and lessons for Business: Idea to Growth" width="1600" height="900">
+        <p class="note" id="dl-note">Free. Runs on your own ChatGPT account or API key. Windows and Linux.</p>
+        <div class="stage"><img class="shot" src="img/03-course-overview.webp" alt="A Roadmap course: stages and lessons for Business: Idea to Growth" width="1600" height="900"></div>
       </div>
     </section>
 
@@ -191,12 +248,14 @@
         <h2>Free. Version 1.0.0.</h2>
         <p class="sub">Roadmap updates itself when a new version is out. The source code will be open soon.</p>
         <div class="dl">
-          <div class="card">
+          <div class="card" data-os="windows">
+            <p class="yours">Your system</p>
             <h3>Windows</h3>
             <p class="meta">Windows 10 or 11, 64-bit</p>
             <div class="row"><a class="btn btn-primary" href="1.0.0/Roadmap_1.0.0_x64-setup.exe">Download installer (.exe)</a></div>
           </div>
-          <div class="card">
+          <div class="card" data-os="linux">
+            <p class="yours">Your system</p>
             <h3>Linux</h3>
             <p class="meta">x86_64</p>
             <div class="row">
@@ -221,5 +280,48 @@
       <a href="https://github.com/MDHaarith/RoadMap-releases/releases">All releases</a>
     </div>
   </footer>
+
+  <script>
+    // Headline: wrap each word so it can rise on its own.
+    const h = document.getElementById("headline");
+    h.innerHTML = h.textContent.split(" ").map((w, i) => `<span class="w"><span style="--i:${i}">${w}</span></span>`).join(" ");
+
+    // Point the main button at the right installer for this visitor's OS.
+    (() => {
+      const REL = "https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.0/";
+      const ua = navigator.userAgent, plat = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "";
+      const btn = document.getElementById("dl-main"), note = document.getElementById("dl-note");
+      let os = null;
+      if (/Android|iPhone|iPad|iPod/i.test(ua)) {
+        note.textContent = "Roadmap is a desktop app. Open this page on a Windows or Linux computer to download it.";
+      } else if (/Win/i.test(plat) || /Windows/i.test(ua)) {
+        os = "windows"; btn.href = "1.0.0/Roadmap_1.0.0_x64-setup.exe"; btn.textContent = "Download for Windows";
+        note.textContent = "Free. Windows 10 or 11, 64-bit. Runs on your own ChatGPT account or API key.";
+      } else if (/Mac/i.test(plat) || /Mac OS X/i.test(ua)) {
+        note.textContent = "Roadmap isn't on macOS yet. It runs on Windows and Linux.";
+      } else if (/Linux|X11/i.test(plat + ua)) {
+        os = "linux";
+        // Firefox on some distros names the distro in its user agent; otherwise the AppImage runs everywhere.
+        const [file, label] = /Ubuntu|Debian|Mint|Pop!_OS/i.test(ua) ? ["Roadmap_1.0.0_amd64.deb", "Download for Linux (.deb)"]
+          : /Fedora|Red Hat|openSUSE|CentOS/i.test(ua) ? ["Roadmap-1.0.0-1.x86_64.rpm", "Download for Linux (.rpm)"]
+          : ["Roadmap_1.0.0_amd64.AppImage", "Download for Linux"];
+        btn.href = REL + file; btn.textContent = label;
+        note.textContent = "Free. Linux x86_64. Runs on your own ChatGPT account or API key.";
+      }
+      if (os) {
+        const card = document.querySelector(`.dl .card[data-os="${os}"]`);
+        card.classList.add("mine"); card.parentElement.prepend(card);
+      }
+    })();
+
+    // Fade sections in as they scroll into view.
+    (() => {
+      const els = document.querySelectorAll(".why blockquote, .why p, #features .kick, #features h2, .feature .text, .feature .shot, .grid .card, .download .kick, .download h2, .download .sub, .dl .card, .req, .warn");
+      document.querySelectorAll(".grid .card, .dl .card").forEach((c, i) => c.style.setProperty("--d", (i % 3) * 0.08 + "s"));
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches || !("IntersectionObserver" in window)) return;
+      const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { rootMargin: "0px 0px -8% 0px" });
+      els.forEach(el => { el.classList.add("reveal"); io.observe(el); });
+    })();
+  </script>
 </body>
 </html>
