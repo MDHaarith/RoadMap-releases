@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Roadmap · Learn anything by building it</title>
+  <meta name="description" content="Roadmap turns anything you want to learn into a step-by-step course built around a real project. Free, runs on your own AI subscription.">
+  <meta property="og:title" content="Roadmap">
+  <meta property="og:description" content="Learn anything by building it, one lesson at a time.">
+  <meta property="og:image" content="https://mdhaarith.github.io/RoadMap-releases/img/og.jpg">
+  <link rel="icon" href="img/logo.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fff; --paper: #f6f6f4; --line: #e5e5e8; --ink: #18181b; --ink-2: #3f3f46; --muted: #5f5f68;
+      --accent: #1a66c9; --accent-soft: #eef4fc; --dot: #e29d58;
+      --display: "Fraunces", Georgia, serif; --font: "Inter", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 400 17px/1.6 var(--font); -webkit-font-smoothing: antialiased; }
+    a { color: var(--accent); }
+    img { max-width: 100%; height: auto; display: block; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding-inline: 24px; }
+
+    header { position: sticky; top: 0; z-index: 10; background: #ffffffe6; backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+    header .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+    .brand { display: flex; align-items: center; gap: 10px; font: 700 22px/1 var(--display); color: var(--ink); text-decoration: none; letter-spacing: -.02em; }
+    .brand img { width: 30px; height: 30px; }
+    nav { display: flex; gap: 24px; align-items: center; font-size: 15px; }
+    nav a { color: var(--ink-2); text-decoration: none; }
+    nav a:hover { color: var(--ink); }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 12px; font: 600 16px/1 var(--font); text-decoration: none; border: 1px solid transparent; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: #1558ad; }
+    .btn-ghost { background: #fff; color: var(--ink); border-color: var(--line); }
+    .btn-ghost:hover { border-color: #c9c9cf; }
+    nav .btn { padding: 9px 14px; font-size: 14px; }
+
+    .hero { background: var(--paper); border-bottom: 1px solid var(--line); padding-block: 88px 0; overflow: hidden; }
+    .hero h1 { font: 700 clamp(44px, 7vw, 80px)/1.02 var(--display); letter-spacing: -.035em; margin: 0 0 20px; max-width: 13ch; }
+    .hero p.lede { font-size: clamp(18px, 2vw, 21px); color: var(--ink-2); max-width: 40em; margin: 0 0 32px; }
+    .hero .ctas { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+    .hero .note { margin-top: 14px; font-size: 14px; color: var(--muted); }
+    .shot { border-radius: 14px; border: 1px solid var(--line); box-shadow: 0 1px 2px #14141e0f, 0 24px 60px #14141e1a; background: #fff; }
+    .hero .shot { margin-top: 64px; border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 0; }
+
+    section { padding-block: 96px; }
+    .kick { font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 12px; }
+    h2 { font: 700 clamp(32px, 4.4vw, 46px)/1.08 var(--display); letter-spacing: -.03em; margin: 0 0 18px; max-width: 20ch; }
+    .sub { color: var(--ink-2); max-width: 38em; margin: 0; }
+
+    .why { border-bottom: 1px solid var(--line); }
+    .why .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start; }
+    .why blockquote { margin: 0; font: 600 clamp(22px, 2.6vw, 28px)/1.35 var(--display); letter-spacing: -.015em; color: var(--ink); }
+    .why p { margin: 0 0 16px; color: var(--ink-2); }
+
+    .feature { display: grid; grid-template-columns: 5fr 7fr; gap: 56px; align-items: center; padding-block: 48px; }
+    .feature.flip { grid-template-columns: 7fr 5fr; }
+    .feature.flip .text { order: 2; }
+    .feature h3 { font: 700 30px/1.15 var(--display); letter-spacing: -.02em; margin: 0 0 12px; }
+    .feature p { margin: 0 0 12px; color: var(--ink-2); }
+    .feature ul { margin: 0; padding-left: 20px; color: var(--ink-2); }
+    .feature li { margin-bottom: 6px; }
+
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 48px; }
+    .card { border: 1px solid var(--line); border-radius: 14px; padding: 22px; background: #fff; }
+    .card b { display: block; font-size: 17px; margin-bottom: 6px; }
+    .card span { color: var(--muted); font-size: 15px; }
+
+    .download { background: var(--paper); border-top: 1px solid var(--line); }
+    .dl { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 40px; }
+    .dl .card { padding: 28px; }
+    .dl h3 { font: 700 24px/1.2 var(--display); margin: 0 0 6px; letter-spacing: -.02em; }
+    .dl .meta { color: var(--muted); font-size: 15px; margin: 0 0 20px; }
+    .dl .row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .req { margin-top: 32px; font-size: 15px; color: var(--ink-2); }
+    .req li { margin-bottom: 6px; }
+    .warn { margin-top: 16px; padding: 14px 18px; border-radius: 12px; background: #fff; border: 1px solid var(--line); font-size: 15px; color: var(--ink-2); }
+
+    footer { border-top: 1px solid var(--line); padding-block: 32px; font-size: 14px; color: var(--muted); }
+    footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+    @media (max-width: 860px) {
+      nav a:not(.btn) { display: none; }
+      .hero { padding-top: 56px; }
+      section { padding-block: 64px; }
+      .why .cols, .feature, .feature.flip, .dl { grid-template-columns: 1fr; gap: 28px; }
+      .feature.flip .text { order: 0; }
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <a class="brand" href="#"><img src="img/logo.svg" alt="">Roadmap</a>
+      <nav>
+        <a href="#why">Why</a>
+        <a href="#features">Features</a>
+        <a href="#download">Download</a>
+        <a class="btn btn-primary" href="#download">Get Roadmap</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <h1>Learn anything by building it.</h1>
+        <p class="lede">Tell Roadmap what you want to learn. It checks what you already know, then builds a step-by-step course around a real project, with lessons, practice and a tutor that knows where you are.</p>
+        <div class="ctas">
+          <a class="btn btn-primary" href="#download">Download for free</a>
+          <a class="btn btn-ghost" href="#features">See what it does</a>
+        </div>
+        <p class="note">Free. Runs on your own ChatGPT account or API key. Windows and Linux.</p>
+        <img class="shot" src="img/03-course-overview.webp" alt="A Roadmap course: stages and lessons for Business: Idea to Growth" width="1600" height="900">
+      </div>
+    </section>
+
+    <section class="why" id="why">
+      <div class="wrap cols">
+        <blockquote>AI can do the work for us. That doesn't mean we stop needing to learn. It just makes learning easy to skip.</blockquote>
+        <div>
+          <p>Building things used to be hard. You ran into problems nobody had solved for you, and you learned your way through them. That struggle was where the learning happened.</p>
+          <p>Now most of it is done for us, and we sit and prompt. Roadmap uses the same AI to put the learning back: it plans the route, explains each step and checks your work, but you do the building.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <div class="wrap">
+        <p class="kick">How it works</p>
+        <h2>From a goal to a finished project, one lesson at a time.</h2>
+
+        <div class="feature">
+          <div class="text">
+            <h3>Start with any goal</h3>
+            <p>"Build an ESP32 weather station." "Bake my first sourdough." "Learn Python with a todo CLI." Type it in your own words and choose how far you want to go: two weeks, a month, three months or six.</p>
+            <p>Already vibe coded a project? Point Roadmap at it and it teaches you how your own code works.</p>
+          </div>
+          <img class="shot" src="img/01-home-goal.webp" alt="The goal screen: what do you want to learn?" width="1600" height="900" loading="lazy">
+        </div>
+
+        <div class="feature flip">
+          <div class="text">
+            <h3>It starts where you are</h3>
+            <p>A few quick questions set the starting point, so you don't sit through what you already know. Then you check the plan before anything is built.</p>
+          </div>
+          <img class="shot" src="img/02-placement-check.webp" alt="Placement questions before the course is built" width="1600" height="900" loading="lazy">
+        </div>
+
+        <div class="feature">
+          <div class="text">
+            <h3>Learn, then do</h3>
+            <ul>
+              <li>Hand-picked videos, clear explanations and charts</li>
+              <li>Real tasks, quizzes and practice exercises</li>
+              <li>A milestone project to prove each stage</li>
+              <li>A tutor that reads your lesson before it answers</li>
+            </ul>
+          </div>
+          <img class="shot" src="img/05-lesson-practice.webp" alt="A practice step inside a lesson" width="1600" height="900" loading="lazy">
+        </div>
+
+        <div class="feature flip">
+          <div class="text">
+            <h3>See how far you've come</h3>
+            <p>Set a daily goal, keep your streak and watch the year fill in. Roadmap tracks the hours you spend learning, per day and per roadmap.</p>
+          </div>
+          <img class="shot" src="img/08-progress.webp" alt="The Progress page" width="1600" height="900" loading="lazy">
+        </div>
+
+        <div class="grid">
+          <div class="card"><b>Mistakes come back</b><span>A daily review and a mistakes notebook bring back what you missed until it sticks.</span></div>
+          <div class="card"><b>Search everything</b><span>Find any lesson, note or tutor chat. Ideas save the moment you type them.</span></div>
+          <div class="card"><b>Change course</b><span>Goals changed halfway? Adjust your roadmap without starting over.</span></div>
+          <div class="card"><b>Share it</b><span>Export a roadmap with your progress, or pass it on as a template.</span></div>
+          <div class="card"><b>Works with your agent</b><span>The Roadmap MCP server lets Claude Code or Codex read your roadmaps and progress.</span></div>
+          <div class="card"><b>Your data stays local</b><span>Roadmaps, notes and progress live on your computer. Only AI requests leave it.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="download" id="download">
+      <div class="wrap">
+        <p class="kick">Download</p>
+        <h2>Free. Version 1.0.0.</h2>
+        <p class="sub">Roadmap updates itself when a new version is out. The source code will be open soon.</p>
+        <div class="dl">
+          <div class="card">
+            <h3>Windows</h3>
+            <p class="meta">Windows 10 or 11, 64-bit</p>
+            <div class="row"><a class="btn btn-primary" href="1.0.0/Roadmap_1.0.0_x64-setup.exe">Download installer (.exe)</a></div>
+          </div>
+          <div class="card">
+            <h3>Linux</h3>
+            <p class="meta">x86_64</p>
+            <div class="row">
+              <a class="btn btn-primary" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.0/Roadmap_1.0.0_amd64.AppImage">AppImage</a>
+              <a class="btn btn-ghost" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.0/Roadmap_1.0.0_amd64.deb">.deb</a>
+              <a class="btn btn-ghost" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.0/Roadmap-1.0.0-1.x86_64.rpm">.rpm</a>
+            </div>
+          </div>
+        </div>
+        <ul class="req">
+          <li>You need a ChatGPT account, or an API key for any OpenAI-compatible service.</li>
+          <li>Video lessons need <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a> installed.</li>
+        </ul>
+        <p class="warn">The Windows installer isn't code-signed yet, so Windows may warn you before it runs. If Smart App Control is on, it will block the installer. A Microsoft Store version is on the way.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>Roadmap by MDHaarith</span>
+      <a href="https://github.com/MDHaarith/RoadMap-releases/releases">All releases</a>
+    </div>
+  </footer>
+</body>
+</html>
