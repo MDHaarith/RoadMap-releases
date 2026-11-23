@@ -290,7 +290,7 @@
             <p class="yours">Your system</p>
             <h3>Windows</h3>
             <p class="meta">Windows 10 or 11, 64-bit</p>
-            <div class="row"><a class="btn btn-primary" href="1.0.0/Roadmap_1.0.0_x64-setup.exe">Download installer (.exe)</a></div>
+            <div class="row"><a class="btn btn-primary" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.0/Roadmap_1.0.0_x64-setup.exe">Download installer (.exe)</a></div>
           </div>
           <div class="card" data-os="linux">
             <p class="yours">Your system</p>
@@ -305,7 +305,7 @@
         </div>
         <ul class="req">
           <li>You need a ChatGPT account, or an API key for any OpenAI-compatible service.</li>
-          <li>Video lessons need <a href="https://github.com/yt-dlp/yt-dlp">yt-dlp</a> installed.</li>
+          <li>Nothing else to install. Roadmap fetches the video tools it needs on its own.</li>
         </ul>
         <p class="warn">The Windows installer isn't code-signed yet, so Windows may warn you before it runs. If Smart App Control is on, it will block the installer. A Microsoft Store version is on the way.</p>
       </div>
@@ -335,7 +335,7 @@
       if (/Android|iPhone|iPad|iPod/i.test(ua)) {
         note.textContent = "Roadmap is a desktop app. Open this page on a Windows or Linux computer to download it.";
       } else if (/Win/i.test(plat) || /Windows/i.test(ua)) {
-        os = "windows"; btn.href = "1.0.0/Roadmap_1.0.0_x64-setup.exe"; btn.textContent = "Download for Windows";
+        os = "windows"; btn.href = REL + "Roadmap_1.0.0_x64-setup.exe"; btn.textContent = "Download for Windows";
         note.textContent = "Free. Windows 10 or 11, 64-bit. Runs on your own ChatGPT account or API key.";
       } else if (/Mac/i.test(plat) || /Mac OS X/i.test(ua)) {
         note.textContent = "Roadmap isn't on macOS yet. It runs on Windows and Linux.";
