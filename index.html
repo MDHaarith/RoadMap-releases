@@ -11,12 +11,15 @@
   <link rel="icon" href="img/logo.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
   <style>
+    /* Same tokens as the app (ui/src/app.css). */
     :root {
-      --bg: #fff; --paper: #f6f6f4; --line: #e5e5e8; --ink: #18181b; --ink-2: #3f3f46; --muted: #5f5f68;
-      --accent: #1a66c9; --accent-soft: #eef4fc; --dot: #e29d58;
-      --display: "Fraunces", Georgia, serif; --font: "Inter", system-ui, sans-serif;
+      --bg: #fff; --paper: #f6f6f7; --line: #e5e5e8; --line-strong: #d2d2d7; --ink: #18181b; --ink-2: #3f3f46; --muted: #595961;
+      --accent: #1a66c9; --accent-soft: #eef4fc; --accent-line: #b9d1f2; --success: #1a7f45;
+      --display: "Fraunces", Georgia, serif;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Cantarell, Ubuntu, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+      --ease: cubic-bezier(.2, 0, 0, 1); --mark-ease: cubic-bezier(.2, .8, .3, 1.18);
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -40,13 +43,13 @@
     .btn-ghost:hover { border-color: #c9c9cf; }
     nav .btn { padding: 9px 14px; font-size: 14px; }
 
-    .hero { background: var(--paper); border-bottom: 1px solid var(--line); padding-block: 88px 0; overflow: hidden; }
+    .hero { background: var(--paper); border-bottom: 1px solid var(--line); padding-block: 88px; overflow: hidden; }
     .hero h1 { font: 700 clamp(44px, 7vw, 80px)/1.02 var(--display); letter-spacing: -.035em; margin: 0 0 20px; max-width: 13ch; }
-    .hero p.lede { font-size: clamp(18px, 2vw, 21px); color: var(--ink-2); max-width: 40em; margin: 0 0 32px; }
+    .hero p.lede { font-size: clamp(18px, 2vw, 21px); color: var(--ink-2); max-width: 34em; margin: 0 0 32px; }
     .hero .ctas { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
     .hero .note { margin-top: 14px; font-size: 14px; color: var(--muted); }
     .shot { border-radius: 14px; border: 1px solid var(--line); box-shadow: 0 1px 2px #14141e0f, 0 24px 60px #14141e1a; background: #fff; }
-    .hero .shot { margin-top: 64px; border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom: 0; }
+    .hero .shot { margin-top: 64px; }
 
     section { padding-block: 96px; }
     .kick { font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin: 0 0 12px; }
@@ -93,16 +96,22 @@
       .grid { grid-template-columns: 1fr; }
     }
 
-    /* Hero route: a line draws across the hero and the orange dot travels along it, like the logo. */
+    /* Hero route: the app's lesson route (thin line, stops: done, current, upcoming) drawn beside the headline. */
     .hero { position: relative; }
     .hero .wrap { position: relative; z-index: 1; }
-    .route { position: absolute; left: 0; top: 0; width: 100%; height: 620px; pointer-events: none; }
-    .route path { fill: none; stroke: #b9d1f2; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 2.6s cubic-bezier(.6,.05,.3,1) .3s forwards; }
-    .route .dot { fill: var(--dot); offset-path: path("M1500 500 C 1320 540, 1080 450, 1060 340 S 1130 160, 1250 130"); offset-distance: 0%; opacity: 0; animation: travel 2.6s cubic-bezier(.6,.05,.3,1) .3s forwards; }
-    .route .ring { fill: none; stroke: var(--dot); stroke-width: 3; opacity: 0; transform-box: fill-box; transform-origin: center; animation: ring 2.2s ease-out 2.9s infinite; }
-    @keyframes ring { 0% { opacity: .6; transform: scale(1); } 100% { opacity: 0; transform: scale(2.6); } }
+    .route { position: absolute; right: 24px; top: -8px; width: 260px; height: 300px; overflow: visible; pointer-events: none; }
+    .route .line { fill: none; stroke: var(--line-strong); stroke-width: 2; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.4s var(--ease) .2s forwards; }
+    .route .stop { transform-box: fill-box; transform-origin: center; animation: stop-appear .32s var(--mark-ease) backwards; animation-delay: calc(.35s + var(--i) * .22s); }
+    .route .stop circle { fill: #fff; stroke: var(--line-strong); stroke-width: 1.5; }
+    .route .done circle { fill: var(--success); stroke: var(--success); }
+    .route .done path { fill: none; stroke: #fff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .route .now circle { stroke: var(--accent); stroke-width: 2; }
+    .route .now circle + circle { fill: var(--accent); stroke: none; }
+    .route .ring { fill: none; stroke: var(--accent); stroke-width: 1.5; transform-box: fill-box; transform-origin: center; opacity: 0; animation: ring-pulse 1.8s var(--ease) 1.6s infinite; }
     @keyframes draw { to { stroke-dashoffset: 0; } }
-    @keyframes travel { 0% { opacity: 1; } to { offset-distance: 100%; opacity: 1; } }
+    @keyframes stop-appear { from { opacity: 0; transform: scale(.65); } }
+    @keyframes ring-pulse { from { opacity: .7; transform: scale(1); } to { opacity: 0; transform: scale(1.9); } }
+    @media (max-width: 1180px) { .route { display: none; } }
 
     /* Headline words rise in one after another; the rest follows. */
     .hero h1 .w { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .08em; margin-bottom: -.08em; }
@@ -112,18 +121,7 @@
     @keyframes rise { to { transform: none; } }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 
-    /* Screenshot starts tilted back and flattens as it scrolls into view. */
-    .hero .stage { perspective: 1400px; }
     .hero .shot { opacity: 0; animation: fadeUp 1s cubic-bezier(.16,1,.3,1) .9s forwards; }
-    @supports (animation-timeline: view()) {
-      .hero .shot { animation: fadeUp 1s cubic-bezier(.16,1,.3,1) .9s forwards, flatten linear both; animation-timeline: auto, view(); animation-range: normal, entry 0% cover 45%; transform-origin: 50% 0; }
-      @keyframes flatten { from { transform: rotateX(18deg) scale(.94); } to { transform: none; } }
-    }
-
-    /* Primary buttons get a soft sheen. */
-    .btn-primary { position: relative; overflow: hidden; }
-    .btn-primary::after { content: ""; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 35%, #ffffff40 50%, transparent 65%); transform: translateX(-120%); animation: sheen 4.5s ease-in-out 2.5s infinite; }
-    @keyframes sheen { 0%, 70% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
 
     /* Scroll reveals. */
     .reveal { opacity: 0; transform: translateY(28px); transition: opacity .8s cubic-bezier(.16,1,.3,1), transform .8s cubic-bezier(.16,1,.3,1); transition-delay: var(--d, 0s); }
@@ -159,7 +157,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; }
-      .route path { stroke-dashoffset: 0; } .route .dot { opacity: 1; offset-distance: 100%; }
+      .route .line { stroke-dashoffset: 0; }
       .hero h1 .w > span { transform: none; }
       .hero .lede, .hero .ctas, .hero .note, .hero .shot, .reveal { opacity: 1; transform: none; }
     }
@@ -180,12 +178,16 @@
 
   <main>
     <section class="hero">
-      <svg class="route" viewBox="0 0 1440 620" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-        <path pathLength="1" d="M1500 500 C 1320 540, 1080 450, 1060 340 S 1130 160, 1250 130"/>
-        <circle class="ring" cx="1250" cy="130" r="11"/>
-        <circle class="dot" r="11"/>
-      </svg>
       <div class="wrap">
+        <svg class="route" viewBox="0 0 260 300" aria-hidden="true">
+          <path class="line" pathLength="1" d="M20 280 C 60 280, 80 240, 90 215 S 115 160, 130 140 S 155 85, 175 75 S 215 25, 240 20"/>
+          <g class="stop done" style="--i:0"><circle cx="20" cy="280" r="11"/><path d="M15 280 l3.5 3.5 l6.5 -7"/></g>
+          <g class="stop done" style="--i:1"><circle cx="90" cy="215" r="11"/><path d="M85 215 l3.5 3.5 l6.5 -7"/></g>
+          <circle class="ring" cx="130" cy="140" r="11"/>
+          <g class="stop now" style="--i:2"><circle cx="130" cy="140" r="11"/><circle cx="130" cy="140" r="5"/></g>
+          <g class="stop" style="--i:3"><circle cx="175" cy="75" r="11"/></g>
+          <g class="stop" style="--i:4"><circle cx="240" cy="20" r="11"/></g>
+        </svg>
         <h1 id="headline">Learn anything by building it.</h1>
         <p class="lede">Tell Roadmap what you want to learn. It checks what you already know, then builds a step-by-step course around a real project, with lessons, practice and a tutor that knows where you are.</p>
         <div class="ctas">
