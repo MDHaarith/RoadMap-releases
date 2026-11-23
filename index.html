@@ -19,6 +19,7 @@
       --accent: #1a66c9; --accent-soft: #eef4fc; --accent-line: #b9d1f2; --success: #1a7f45;
       --display: "Fraunces", Georgia, serif;
       --font: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Cantarell, Ubuntu, "Noto Sans", "Helvetica Neue", Arial, sans-serif;
+      --ease: cubic-bezier(.2, 0, 0, 1); --mark-ease: cubic-bezier(.2, .8, .3, 1.18);
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -95,7 +96,34 @@
       .grid { grid-template-columns: 1fr; }
     }
 
-    .hero .empty-route { display: block; width: 88px; height: 48px; margin-bottom: 12px; color: var(--accent); }
+    /* Hero route: the app's empty-route mark (flat runs, rounded steps up, open stops, filled goal) drawn large.
+       The line draws itself, each stop fills as it is reached, then a light keeps travelling the road. */
+    .hero-top { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 40px; align-items: center; }
+    .road { position: relative; }
+    .road::before { content: ""; position: absolute; inset: -40px -20px; background: radial-gradient(var(--line-strong) 1.1px, transparent 1.4px) 0 0 / 22px 22px; -webkit-mask-image: radial-gradient(closest-side, #000 30%, transparent); mask-image: radial-gradient(closest-side, #000 30%, transparent); opacity: .7; }
+    .road svg { position: relative; display: block; width: 100%; height: auto; overflow: visible; }
+    .road .ghost { fill: none; stroke: var(--accent-line); stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 2 9; }
+    .road .line { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 2.6s linear .5s forwards; }
+    .road .spark { fill: none; stroke: #8fbaf0; stroke-width: 3; stroke-linecap: round; stroke-dasharray: .07 .93; stroke-dashoffset: .07; opacity: 0; animation: spark 3.2s cubic-bezier(.45, 0, .2, 1) 3.6s infinite; }
+    .road .runner { fill: var(--accent); offset-path: path("M28 330 H70 c48 0 24 -72 78 -72 H198 c48 0 24 -72 78 -72 H326 c48 0 24 -72 78 -72 H448"); offset-rotate: 0deg; opacity: 0; animation: run 2.6s linear .5s forwards; }
+    .road .halo { fill: var(--accent); opacity: .18; }
+    .road .stop circle { fill: var(--bg); stroke: var(--accent); stroke-width: 2.5; }
+    .road .stop .in { fill: var(--accent); stroke: none; transform-box: fill-box; transform-origin: center; transform: scale(0); animation: fill .45s var(--mark-ease) forwards; animation-delay: var(--t); }
+    .road .stop { transform-box: fill-box; transform-origin: center; animation: stop-appear .4s var(--mark-ease) backwards; animation-delay: calc(.15s + var(--n) * .08s); }
+    .road .goal .in { transform: scale(0); }
+    .road .goal circle:first-child { stroke-width: 2.5; }
+    .road .ring { fill: none; stroke: var(--accent); stroke-width: 2; transform-box: fill-box; transform-origin: center; opacity: 0; animation: ring-pulse 2s var(--ease) 3.2s infinite; }
+    .road text { font: 600 11px var(--font); letter-spacing: .08em; fill: var(--muted); }
+    .road text .name { font: 700 17px var(--display); letter-spacing: -.01em; fill: var(--ink); }
+    .road .label { opacity: 0; animation: fadeUp .6s cubic-bezier(.16,1,.3,1) forwards; animation-delay: var(--t); }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @keyframes run { 0% { offset-distance: 0%; opacity: 1; } 96% { opacity: 1; } 100% { offset-distance: 100%; opacity: 0; } }
+    @keyframes fill { to { transform: scale(1); } }
+    @keyframes spark { 0% { stroke-dashoffset: .07; opacity: 0; } 8% { opacity: 1; } 85% { opacity: 1; } 100% { stroke-dashoffset: -1; opacity: 0; } }
+    @keyframes stop-appear { from { opacity: 0; transform: scale(.6); } }
+    @keyframes ring-pulse { from { opacity: .6; transform: scale(1); } to { opacity: 0; transform: scale(2.4); } }
+    @media (max-width: 980px) { .hero-top { grid-template-columns: 1fr; } .road { max-width: 420px; margin-top: 16px; } }
+    @media (max-width: 560px) { .road { display: none; } }
 
     /* Headline words rise in one after another; the rest follows. */
     .hero h1 .w { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: .08em; margin-bottom: -.08em; }
@@ -142,6 +170,7 @@
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation: none !important; transition: none !important; }
       .hero h1 .w > span { transform: none; }
+      .road .line { stroke-dashoffset: 0; } .road .stop .in { transform: none; } .road .label { opacity: 1; } .road .runner, .road .spark { display: none; }
       .hero .lede, .hero .ctas, .hero .note, .hero .shot, .reveal { opacity: 1; transform: none; }
     }
   </style>
@@ -162,14 +191,34 @@
   <main>
     <section class="hero">
       <div class="wrap">
-        <svg class="empty-route" viewBox="0 0 88 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 36h22c16 0 8-24 26-24h24" /><circle cx="8" cy="36" r="4" fill="var(--bg)" /><circle cx="44" cy="24" r="4" fill="var(--bg)" /><circle cx="80" cy="12" r="4" fill="var(--accent)" stroke="var(--accent)" /></svg>
-        <h1 id="headline">Learn anything by building it.</h1>
-        <p class="lede">Tell Roadmap what you want to learn. It checks what you already know, then builds a step-by-step course around a real project, with lessons, practice and a tutor that knows where you are.</p>
-        <div class="ctas">
-          <a class="btn btn-primary" id="dl-main" href="#download">Download for free</a>
-          <a class="btn btn-ghost" href="#features">See what it does</a>
+        <div class="hero-top">
+          <div>
+            <h1 id="headline">Learn anything by building it.</h1>
+            <p class="lede">Tell Roadmap what you want to learn. It checks what you already know, then builds a step-by-step course around a real project, with lessons, practice and a tutor that knows where you are.</p>
+            <div class="ctas">
+              <a class="btn btn-primary" id="dl-main" href="#download">Download for free</a>
+              <a class="btn btn-ghost" href="#features">See what it does</a>
+            </div>
+            <p class="note" id="dl-note">Free. Runs on your own ChatGPT account or API key. Windows and Linux.</p>
+          </div>
+          <div class="road" aria-hidden="true">
+            <svg viewBox="0 40 476 340">
+              <path class="ghost" d="M28 330 H70 c48 0 24 -72 78 -72 H198 c48 0 24 -72 78 -72 H326 c48 0 24 -72 78 -72 H448"/>
+              <path class="line" pathLength="1" d="M28 330 H70 c48 0 24 -72 78 -72 H198 c48 0 24 -72 78 -72 H326 c48 0 24 -72 78 -72 H448"/>
+              <path class="spark" pathLength="1" d="M28 330 H70 c48 0 24 -72 78 -72 H198 c48 0 24 -72 78 -72 H326 c48 0 24 -72 78 -72 H448"/>
+              <g class="stop" style="--n:0; --t:.5s"><circle cx="28" cy="330" r="9"/><circle class="in" cx="28" cy="330" r="4"/></g>
+              <g class="stop" style="--n:1; --t:1.39s"><circle cx="173" cy="258" r="9"/><circle class="in" cx="173" cy="258" r="4"/></g>
+              <g class="stop" style="--n:2; --t:2.2s"><circle cx="301" cy="186" r="9"/><circle class="in" cx="301" cy="186" r="4"/></g>
+              <circle class="ring" cx="448" cy="114" r="11"/>
+              <g class="stop goal" style="--n:3; --t:3.1s"><circle cx="448" cy="114" r="11"/><circle class="in" cx="448" cy="114" r="11"/></g>
+              <g class="runner"><circle class="halo" r="14"/><circle r="6"/></g>
+              <text class="label" x="14" y="364" style="--t:.5s"><tspan>START</tspan><tspan class="name" x="14" dy="22">What you know</tspan></text>
+              <text class="label" x="161" y="292" style="--t:1.39s"><tspan>STAGE 1</tspan><tspan class="name" x="161" dy="22">First build</tspan></text>
+              <text class="label" x="289" y="220" style="--t:2.2s"><tspan>STAGE 2</tspan><tspan class="name" x="289" dy="22">Going deeper</tspan></text>
+              <text class="label" x="459" y="62" text-anchor="end" style="--t:3.1s"><tspan>GOAL</tspan><tspan class="name" x="459" dy="22">Your finished project</tspan></text>
+            </svg>
+          </div>
         </div>
-        <p class="note" id="dl-note">Free. Runs on your own ChatGPT account or API key. Windows and Linux.</p>
         <div class="stage"><img class="shot" src="img/03-course-overview.webp" alt="A Roadmap course: stages and lessons for Business: Idea to Growth" width="1600" height="900"></div>
       </div>
     </section>
