@@ -199,7 +199,7 @@
               <a class="btn btn-primary" id="dl-main" href="#download">Download for free</a>
               <a class="btn btn-ghost" href="#features">See what it does</a>
             </div>
-            <p class="note" id="dl-note">Free. Runs on your own ChatGPT account or API key. Windows and Linux.</p>
+            <p class="note" id="dl-note">Free. Runs on your ChatGPT or Claude plan, free OpenCode models, Ollama, or an API key. Windows and Linux.</p>
           </div>
           <div class="road" aria-hidden="true">
             <svg viewBox="0 40 476 340">
@@ -299,8 +299,8 @@
         </div>
 
         <div class="grid">
-          <div class="card"><b>Your own AI</b><span>Sign in with your ChatGPT plan, or paste a key for any OpenAI-compatible service.</span></div>
-          <div class="card"><b>Works with your agent</b><span>The Roadmap MCP server lets Claude Code or Codex read your roadmaps and progress.</span></div>
+          <div class="card"><b>Your own AI</b><span>Use your ChatGPT plan, Claude Code, OpenCode's free models, Ollama on your computer, or a key for any OpenAI-compatible service.</span></div>
+          <div class="card"><b>Works with your agent</b><span>Roadmap connects itself to Claude Code, Codex, OpenCode, Gemini CLI, Cursor, VS Code and Windsurf, so they can read your roadmaps and progress.</span></div>
           <div class="card"><b>Your data stays local</b><span>Roadmaps, notes and progress live on your computer. Only AI requests leave it.</span></div>
         </div>
       </div>
@@ -309,28 +309,28 @@
     <section class="download" id="download">
       <div class="wrap">
         <p class="kick">Download</p>
-        <h2>Free. Version 1.0.0.</h2>
+        <h2>Free. Version 1.0.1.</h2>
         <p class="sub">Roadmap updates itself when a new version is out. The source code will be open soon.</p>
         <div class="dl">
           <div class="card" data-os="windows">
             <p class="yours">Your system</p>
             <h3>Windows</h3>
             <p class="meta">Windows 10 or 11, 64-bit</p>
-            <div class="row"><a class="btn btn-primary" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.0/Roadmap_1.0.0_x64-setup.exe">Download installer (.exe)</a></div>
+            <div class="row"><a class="btn btn-primary" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.1/Roadmap_1.0.1_x64-setup.exe">Download installer (.exe)</a></div>
           </div>
           <div class="card" data-os="linux">
             <p class="yours">Your system</p>
             <h3>Linux</h3>
             <p class="meta">x86_64</p>
             <div class="row">
-              <a class="btn btn-primary" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.0/Roadmap_1.0.0_amd64.AppImage">AppImage</a>
-              <a class="btn btn-ghost" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.0/Roadmap_1.0.0_amd64.deb">.deb</a>
-              <a class="btn btn-ghost" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.0/Roadmap-1.0.0-1.x86_64.rpm">.rpm</a>
+              <a class="btn btn-primary" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.1/Roadmap_1.0.1_amd64.AppImage">AppImage</a>
+              <a class="btn btn-ghost" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.1/Roadmap_1.0.1_amd64.deb">.deb</a>
+              <a class="btn btn-ghost" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.1/Roadmap-1.0.1-1.x86_64.rpm">.rpm</a>
             </div>
           </div>
         </div>
         <ul class="req">
-          <li>You need a ChatGPT account, or an API key for any OpenAI-compatible service.</li>
+          <li>You need an AI to run it: a ChatGPT or Claude plan, OpenCode (free models, the Windows installer can set it up), Ollama, or an API key for any OpenAI-compatible service.</li>
           <li>Nothing else to install. Roadmap fetches the video tools it needs on its own.</li>
         </ul>
         <p class="warn">The Windows installer isn't code-signed yet, so Windows may warn you before it runs. If Smart App Control is on, it will block the installer. A Microsoft Store version is on the way.</p>
@@ -354,25 +354,25 @@
 
     // Point the main button at the right installer for this visitor's OS.
     (() => {
-      const REL = "https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.0/";
+      const REL = "https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.1/";
       const ua = navigator.userAgent, plat = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "";
       const btn = document.getElementById("dl-main"), note = document.getElementById("dl-note");
       let os = null;
       if (/Android|iPhone|iPad|iPod/i.test(ua)) {
         note.textContent = "Roadmap is a desktop app. Open this page on a Windows or Linux computer to download it.";
       } else if (/Win/i.test(plat) || /Windows/i.test(ua)) {
-        os = "windows"; btn.href = REL + "Roadmap_1.0.0_x64-setup.exe"; btn.textContent = "Download for Windows";
-        note.textContent = "Free. Windows 10 or 11, 64-bit. Runs on your own ChatGPT account or API key.";
+        os = "windows"; btn.href = REL + "Roadmap_1.0.1_x64-setup.exe"; btn.textContent = "Download for Windows";
+        note.textContent = "Free. Windows 10 or 11, 64-bit. Runs on your ChatGPT or Claude plan, free OpenCode models, Ollama, or an API key.";
       } else if (/Mac/i.test(plat) || /Mac OS X/i.test(ua)) {
         note.textContent = "Roadmap isn't on macOS yet. It runs on Windows and Linux.";
       } else if (/Linux|X11/i.test(plat + ua)) {
         os = "linux";
         // Firefox on some distros names the distro in its user agent; otherwise the AppImage runs everywhere.
-        const [file, label] = /Ubuntu|Debian|Mint|Pop!_OS/i.test(ua) ? ["Roadmap_1.0.0_amd64.deb", "Download for Linux (.deb)"]
-          : /Fedora|Red Hat|openSUSE|CentOS/i.test(ua) ? ["Roadmap-1.0.0-1.x86_64.rpm", "Download for Linux (.rpm)"]
-          : ["Roadmap_1.0.0_amd64.AppImage", "Download for Linux"];
+        const [file, label] = /Ubuntu|Debian|Mint|Pop!_OS/i.test(ua) ? ["Roadmap_1.0.1_amd64.deb", "Download for Linux (.deb)"]
+          : /Fedora|Red Hat|openSUSE|CentOS/i.test(ua) ? ["Roadmap-1.0.1-1.x86_64.rpm", "Download for Linux (.rpm)"]
+          : ["Roadmap_1.0.1_amd64.AppImage", "Download for Linux"];
         btn.href = REL + file; btn.textContent = label;
-        note.textContent = "Free. Linux x86_64. Runs on your own ChatGPT account or API key.";
+        note.textContent = "Free. Linux x86_64. Runs on your ChatGPT or Claude plan, free OpenCode models, Ollama, or an API key.";
       }
       if (os) {
         const card = document.querySelector(`.dl .card[data-os="${os}"]`);
