@@ -309,23 +309,23 @@
     <section class="download" id="download">
       <div class="wrap">
         <p class="kick">Download</p>
-        <h2>Free. Version 1.0.1.</h2>
+        <h2 id="dl-version">Free. Version 1.0.1.</h2>
         <p class="sub">Roadmap updates itself when a new version is out. The source code will be open soon.</p>
         <div class="dl">
           <div class="card" data-os="windows">
             <p class="yours">Your system</p>
             <h3>Windows</h3>
             <p class="meta">Windows 10 or 11, 64-bit</p>
-            <div class="row"><a class="btn btn-primary" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.1/Roadmap_1.0.1_x64-setup.exe">Download installer (.exe)</a></div>
+            <div class="row"><a class="btn btn-primary" data-asset="exe" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.1/Roadmap_1.0.1_x64-setup.exe">Download installer (.exe)</a></div>
           </div>
           <div class="card" data-os="linux">
             <p class="yours">Your system</p>
             <h3>Linux</h3>
             <p class="meta">x86_64</p>
             <div class="row">
-              <a class="btn btn-primary" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.1/Roadmap_1.0.1_amd64.AppImage">AppImage</a>
-              <a class="btn btn-ghost" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.1/Roadmap_1.0.1_amd64.deb">.deb</a>
-              <a class="btn btn-ghost" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.1/Roadmap-1.0.1-1.x86_64.rpm">.rpm</a>
+              <a class="btn btn-primary" data-asset="AppImage" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.1/Roadmap_1.0.1_amd64.AppImage">AppImage</a>
+              <a class="btn btn-ghost" data-asset="deb" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.1/Roadmap_1.0.1_amd64.deb">.deb</a>
+              <a class="btn btn-ghost" data-asset="rpm" href="https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.1/Roadmap-1.0.1-1.x86_64.rpm">.rpm</a>
             </div>
           </div>
         </div>
@@ -354,30 +354,52 @@
 
     // Point the main button at the right installer for this visitor's OS.
     (() => {
-      const REL = "https://github.com/MDHaarith/RoadMap-releases/releases/download/v1.0.1/";
       const ua = navigator.userAgent, plat = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "";
       const btn = document.getElementById("dl-main"), note = document.getElementById("dl-note");
       let os = null;
       if (/Android|iPhone|iPad|iPod/i.test(ua)) {
         note.textContent = "Roadmap is a desktop app. Open this page on a Windows or Linux computer to download it.";
       } else if (/Win/i.test(plat) || /Windows/i.test(ua)) {
-        os = "windows"; btn.href = REL + "Roadmap_1.0.1_x64-setup.exe"; btn.textContent = "Download for Windows";
+        os = "windows"; btn.dataset.asset = "exe"; btn.textContent = "Download for Windows";
         note.textContent = "Free. Windows 10 or 11, 64-bit. Runs on your ChatGPT or Claude plan, free OpenCode models, Ollama, or an API key.";
       } else if (/Mac/i.test(plat) || /Mac OS X/i.test(ua)) {
         note.textContent = "Roadmap isn't on macOS yet. It runs on Windows and Linux.";
       } else if (/Linux|X11/i.test(plat + ua)) {
         os = "linux";
         // Firefox on some distros names the distro in its user agent; otherwise the AppImage runs everywhere.
-        const [file, label] = /Ubuntu|Debian|Mint|Pop!_OS/i.test(ua) ? ["Roadmap_1.0.1_amd64.deb", "Download for Linux (.deb)"]
-          : /Fedora|Red Hat|openSUSE|CentOS/i.test(ua) ? ["Roadmap-1.0.1-1.x86_64.rpm", "Download for Linux (.rpm)"]
-          : ["Roadmap_1.0.1_amd64.AppImage", "Download for Linux"];
-        btn.href = REL + file; btn.textContent = label;
+        const [asset, label] = /Ubuntu|Debian|Mint|Pop!_OS/i.test(ua) ? ["deb", "Download for Linux (.deb)"]
+          : /Fedora|Red Hat|openSUSE|CentOS/i.test(ua) ? ["rpm", "Download for Linux (.rpm)"]
+          : ["AppImage", "Download for Linux"];
+        btn.dataset.asset = asset; btn.textContent = label;
         note.textContent = "Free. Linux x86_64. Runs on your ChatGPT or Claude plan, free OpenCode models, Ollama, or an API key.";
       }
       if (os) {
         const card = document.querySelector(`.dl .card[data-os="${os}"]`);
         card.classList.add("mine"); card.parentElement.prepend(card);
+        btn.href = document.querySelector(`.dl [data-asset="${btn.dataset.asset}"]`).href;
       }
+    })();
+
+    // Point every download at the newest release that has it. Linux and Windows release on
+    // their own, so each can be on a different version. The links above stay if GitHub is unreachable.
+    (async () => {
+      const ends = { exe: "_x64-setup.exe", AppImage: ".AppImage", deb: ".deb", rpm: ".rpm" };
+      let releases;
+      try {
+        const r = await fetch("https://api.github.com/repos/MDHaarith/RoadMap-releases/releases?per_page=30");
+        if (!r.ok) return;
+        releases = (await r.json()).filter(x => !x.draft && !x.prerelease);
+      } catch { return; }
+      const found = {};
+      for (const [key, end] of Object.entries(ends)) {
+        for (const rel of releases) {
+          const a = rel.assets.find(a => a.name.endsWith(end));
+          if (a) { found[key] = { url: a.browser_download_url, version: rel.tag_name.replace(/^v/, "") }; break; }
+        }
+      }
+      for (const el of document.querySelectorAll("[data-asset]")) if (found[el.dataset.asset]) el.href = found[el.dataset.asset].url;
+      const win = found.exe && found.exe.version, lin = found.AppImage && found.AppImage.version;
+      if (win && lin) document.getElementById("dl-version").textContent = win === lin ? `Free. Version ${win}.` : `Free. Windows ${win}, Linux ${lin}.`;
     })();
 
     // Fade sections in as they scroll into view.
